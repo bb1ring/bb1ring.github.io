@@ -1,16 +1,17 @@
 ---
-title: "About this website"
+title: "Resume"
 output: 
   html_document:
     toc: true
     toc_float: true
 ---
 
-# information about this website
+# Academic and Professional Experience 
+
+Explore my academic and professional journey in public health and biostatistics. My background includes rigorous coursework in statistical modeling, machine learning, and healthcare quality, coupled with hands-on experience through internships and collaborative projects. I’m currently enrolled at Columbia University, working on projects in data analysis, quality improvement, and digital health trends. Scroll down for a detailed view of my skills, experiences, and qualifications.
 
 
-This website was made as an aexample in [p8105](https://p8105.com/making_websites.html) for "making website".
-
+<iframe src="pic/cv.pdf" width="100%" height="600px">
 
 
 
