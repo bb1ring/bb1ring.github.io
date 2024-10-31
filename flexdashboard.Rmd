@@ -12,22 +12,20 @@ editor_options:
 library(tidyverse)
 library(p8105.datasets)
 library(plotly)
+library(tidyverse)
 
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USW00022534", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2021-01-01",
-    date_max = "2021-12-31") |>
+data("ny_noaa")
+ny_noaa <- ny_noaa |>
+  janitor::clean_names() |>
   mutate(
-    name = case_match(
-      id, 
-      "USW00094728" ~ "CentralPark_NY", 
-      "USW00022534" ~ "Molokai_HI",
-      "USS0023B17S" ~ "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) |>
-  select(name, id, everything())
+    tmax = as.numeric(tmax) / 10,
+    tmin = as.numeric(tmin) / 10,
+    prcp = prcp / 10
+  ) |>
+  separate(col = "date", into = c("year", "month", "day"), sep = "-") |>
+  filter(year %in% c("2000","2001","2002")
+  )
+
 ```
 
 Column {data-width=650}
@@ -36,12 +34,14 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-scatter_ggplot = weather_df |>
-  ggplot(aes(x = date, y = tmax, color = name)) + 
-  geom_point(aes(size = prcp), alpha = .5) +
-  geom_smooth(se = FALSE) + 
-  facet_grid(. ~ name)
-ggplotly(scatter_ggplot)
+ny_noaa |>
+  group_by(year, month) |>
+  summarise(avg_snwd = mean(snwd, na.rm = TRUE)) |>
+  plot_ly(x = ~year, y = ~month, z = ~avg_snwd, type = "heatmap", colors = "Blues") |>
+  layout(title = "Average Monthly Snow Depth", 
+         xaxis = list(title = "Year"), 
+         yaxis = list(title = "Month"))
+
 ```
 
 Column {data-width=350}
@@ -50,15 +50,28 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
-weather_df |>
-  plot_ly (x = ~tmax, y = ~tmin,
-    type = "histogram", color = ~name)
+ny_noaa |>
+  filter(month == "12") |>
+  plot_ly(x = ~snow, y = ~tmin, z = ~tmax, type = "scatter3d", mode = "markers") |>
+  layout(
+    title = "3D Scatter Plot of Snow, Minimum, and Maximum Temperatures in December",
+    scene = list(
+      xaxis = list(title = "Snow (cm)"),
+      yaxis = list(title = "Minimum Temperature (°C)"),
+      zaxis = list(title = "Maximum Temperature (°C)")
+    )
+  )
 ```
 
 ### Chart C
 
 ```{r}
-weather_df |>
-  plot_ly (x = ~name, y = ~tmax, type = "box" )
+ny_noaa |>
+  plot_ly (x = ~year, y = ~tmin, type = "box") |>
+  layout(
+    title = "Minimum Temperature Distribution by Year",
+    yaxis = list(title = "Minimum Temperature (°C)"),
+    xaxis = list(title = "Year")
+    )
 ```
 
