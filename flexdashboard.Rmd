@@ -35,22 +35,6 @@ Column {data-width=650}
 
 ```{r}
 ny_noaa |>
-  group_by(year, month) |>
-  summarise(avg_snwd = mean(snwd, na.rm = TRUE)) |>
-  plot_ly(x = ~year, y = ~month, z = ~avg_snwd, type = "heatmap", colors = "Blues") |>
-  layout(title = "Average Monthly Snow Depth", 
-         xaxis = list(title = "Year"), 
-         yaxis = list(title = "Month"))
-
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r}
-ny_noaa |>
   filter(month == "12") |>
   plot_ly(x = ~snow, y = ~tmin, z = ~tmax, type = "scatter3d", mode = "markers") |>
   layout(
@@ -61,6 +45,22 @@ ny_noaa |>
       zaxis = list(title = "Maximum Temperature (°C)")
     )
   )
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+ny_noaa |>
+  group_by(year, month) |>
+  summarise(avg_snwd = mean(snwd, na.rm = TRUE)) |>
+  plot_ly(x = ~year, y = ~month, z = ~avg_snwd, type = "heatmap", colors = "Blues") |>
+  layout(title = "Average Monthly Snow Depth", 
+         xaxis = list(title = "Year"), 
+         yaxis = list(title = "Month"))
 ```
 
 ### Chart C
